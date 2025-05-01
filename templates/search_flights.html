@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Booking - Search Flights</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #eef7fa;
+        }
+        header {
+            background-color: #003366;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        nav {
+            background-color: #0055aa;
+            text-align: center;
+            padding: 10px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            font-weight: bold;
+        }
+        .search-section {
+            background: white;
+            margin: 30px auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+        .search-section h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .search-section input, .search-section select, .search-section button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .search-section button {
+            background-color: #0077cc;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .search-section button:hover {
+            background-color: #005fa3;
+        }
+        .gallery {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 30px;
+        }
+        .gallery img {
+            width: 22%;
+            margin: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        .gallery img:hover {
+            transform: scale(1.05);
+        }
+        footer {
+            background-color: #003366;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 40px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            padding-top: 100px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-left: 20px;
+        }
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .scroll-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #0077cc;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+        }
+        .lightbox-img {
+            max-width: 80%;
+            max-height: 80%;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Search Flights - FlyHigh Airlines</h1>
+    <nav>
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('search_flights') }}">Search Flights</a>  <!-- Fixed here -->
+        <a href="{{ url_for('booking') }}">Book Now</a>
+        <a href="{{ url_for('contact') }}">Contact Us</a>
+        <a href="{{ url_for('payment') }}">Payment</a>
+    </nav>
+</header>
+
+
+
+<section class="search-section">
+    <h2>Find Your Flight</h2>
+    <form id="flightForm">
+        <input type="text" id="from" placeholder="From (City)" required>
+        <input type="text" id="to" placeholder="To (City)" required>
+        <input type="date" id="date" required>
+        <select id="class" required>
+            <option value="">Select Class</option>
+            <option value="Economy">Economy</option>
+            <option value="Business">Business</option>
+            <option value="First">First Class</option>
+        </select>
+        <button type="submit">Search Flights</button>
+    </form>
+</section>
+
+<section class="gallery">
+    <img src="{{ url_for('static', filename='images/image1.png') }}" alt="Gallery 1">
+    <img src="{{ url_for('static', filename='images/image2.png') }}" alt="Gallery 2">
+    <img src="{{ url_for('static', filename='images/images3.png') }}" alt="Gallery 3">
+    <img src="{{ url_for('static', filename='images/image4.png') }}" alt="Gallery 4">
+</section>
+
+<footer>
+    <p>© 2025 FlyHigh Airlines. All rights reserved.</p>
+</footer>
+
+<!-- Modal -->
+<div id="confirmationModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Flight Search Confirmation</h3>
+        <p id="confirmationText"></p>
+        <button onclick="window.location.href='booking.html'">Proceed to Booking</button>
+    </div>
+</div>
+
+<button class="scroll-to-top" onclick="scrollToTop()">↑</button>
+
+<!-- Lightbox Modal -->
+<div id="lightbox" class="modal">
+    <span class="close" onclick="closeLightbox()">&times;</span>
+    <img class="lightbox-img" id="lightboxImg" src="" alt="Lightbox Image">
+</div>
+
+<script>
+    const flightForm = document.getElementById('flightForm');
+    const confirmationModal = document.getElementById('confirmationModal');
+    const closeModal = document.querySelector('.close');
+    const confirmationText = document.getElementById('confirmationText');
+
+    flightForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const from = document.getElementById('from').value;
+        const to = document.getElementById('to').value;
+        const date = document.getElementById('date').value;
+        const travelClass = document.getElementById('class').value;
+        
+        if (from && to && date && travelClass) {
+            confirmationText.textContent = `Searching flights from ${from} to ${to} on ${date} in ${travelClass} class.`;
+            confirmationModal.style.display = "block";
+        } else {
+            alert('Please fill all fields!');
+        }
+    });
+
+    closeModal.addEventListener('click', function() {
+        confirmationModal.style.display = "none";
+    });
+
+    window.onclick = function(event) {
+        if (event.target == confirmationModal) {
+            confirmationModal.style.display = "none";
+        }
+    }
+
+    // Lightbox functionality
+    const galleryImages = document.querySelectorAll('.gallery img');
+    galleryImages.forEach(img => {
+        img.addEventListener('click', () => {
+            document.getElementById('lightboxImg').src = img.src;
+            document.getElementById('lightbox').style.display = "block";
+        });
+    });
+
+    function closeLightbox() {
+        document.getElementById('lightbox').style.display = "none";
+    }
+
+    // Scroll to top button
+    window.onscroll = function() {
+        const scrollButton = document.querySelector('.scroll-to-top');
+        if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+            scrollButton.style.display = "block";
+        } else {
+            scrollButton.style.display = "none";
+        }
+    };
+
+    function scrollToTop() {
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - FlyHigh Airlines</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef6fc;
+        }
+        header {
+            background-color: #003366;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        nav {
+            background-color: #0055aa;
+            text-align: center;
+            padding: 10px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        .contact-form {
+            background: white;
+            margin: 30px auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+        .contact-form h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .contact-form input, .contact-form textarea, .contact-form button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        .contact-form button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .contact-form button:hover {
+            background-color: #218838;
+        }
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 30px;
+        }
+        .gallery img {
+            width: 22%;
+            margin: 10px;
+            border-radius: 10px;
+            box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .gallery img:hover {
+            transform: scale(1.05);
+        }
+        footer {
+            background-color: #003366;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        .social-links {
+            margin: 20px 0;
+        }
+        .social-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 20px;
+        }
+        .social-links a:hover {
+            opacity: 0.7;
+        }
+        /* Google Map Embed */
+        .map-container {
+            margin: 30px auto;
+            width: 100%;
+            max-width: 800px;
+            height: 400px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Contact FlyHigh Airlines</h1>
+    <nav>
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('search_flights') }}">Search Flights</a>  <!-- Fixed here -->
+        <a href="{{ url_for('booking') }}">Book Now</a>
+        <a href="{{ url_for('contact') }}">Contact Us</a>
+        <a href="{{ url_for('payment') }}">Payment</a>
+    </nav>
+</header>
+
+
+
+<section class="contact-form">
+    <h2>Get in Touch</h2>
+    <form id="contactForm">
+        <input type="text" id="name" placeholder="Your Name" required>
+        <input type="email" id="email" placeholder="Your Email" required>
+        <textarea id="message" rows="5" placeholder="Your Message..." required></textarea>
+        <button type="submit">Send Message</button>
+    </form>
+</section>
+
+<section class="gallery">
+    <img src="{{ url_for('static', filename='images/contact1.png') }}" alt="Gallery 1">
+    <img src="{{ url_for('static', filename='images/contact2.png') }}" alt="Gallery 2">
+    <img src="{{ url_for('static', filename='images/contact3.png') }}" alt="Gallery 3">
+    <img src="{{ url_for('static', filename='images/contact4.png') }}" alt="Gallery 4">
+</section>
+
+<section class="map-container">
+    <h3>Our Office Location</h3>
+    <!-- Embed Google Map -->
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3676.022906779725!2d-74.005941!3d40.712776!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259abbe44bc1b%3A0x87d7172b84bdfca5!2sOne%20World%20Trade%20Center!5e0!3m2!1sen!2sus!4v1633626607132!5m2!1sen!2sus" allowfullscreen="" loading="lazy"></iframe>
+</section>
+
+<section class="social-links">
+    <h3>Follow Us</h3>
+    <a href="https://www.instagram.com" target="_blank">Instagram</a>
+    <a href="https://wa.me/1234567890" target="_blank">WhatsApp</a>
+    <a href="https://www.facebook.com" target="_blank">Facebook</a>
+    <a href="https://twitter.com" target="_blank">Twitter</a>
+    <a href="https://www.linkedin.com" target="_blank">LinkedIn</a>
+</section>
+
+<footer>
+    <p>© 2025 FlyHigh Airlines. All rights reserved.</p>
+</footer>
+
+<script>
+    // Handle form submission
+    const contactForm = document.getElementById('contactForm');
+    contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const message = document.getElementById('message').value.trim();
+
+        if (name && email && message) {
+            alert(`Thank you, ${name}! Your message has been sent. We'll contact you shortly.`);
+            contactForm.reset();
+        } else {
+            alert('Please fill out all fields correctly.');
+        }
+    });
+
+    // Image click popup
+    const images = document.querySelectorAll('.gallery img');
+    images.forEach(img => {
+        img.addEventListener('click', () => {
+            alert('You clicked an image from the contact page!');
+        });
+    });
+
+    // Add a confirmation alert when a social media link is clicked
+    const socialLinks = document.querySelectorAll('.social-links a');
+    socialLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent default behavior of the link
+            alert('Redirecting to social media...');
+            window.open(link.href, '_blank'); // Open the social media link in a new tab
+        });
+    });
+</script>
+
+</body>
+</html>

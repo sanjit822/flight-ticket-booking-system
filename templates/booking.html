@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flight Booking - Confirm Your Flight</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #f2f8fc;
+    }
+    header {
+      background-color: #003366;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    nav {
+      background-color: #0055aa;
+      text-align: center;
+      padding: 10px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      font-weight: bold;
+    }
+    .booking-section {
+      background: white;
+      margin: 30px auto;
+      padding: 20px;
+      width: 80%;
+      max-width: 700px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 10px;
+    }
+    .booking-section h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .booking-section input, .booking-section select, .booking-section button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .booking-section button {
+      background-color: #28a745;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .booking-section button:hover {
+      background-color: #218838;
+    }
+    .price-display {
+      text-align: center;
+      font-size: 18px;
+      margin: 10px 0;
+      font-weight: bold;
+    }
+    .gallery {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 30px;
+      gap: 10px;
+    }
+    .gallery img {
+      width: 22%;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .gallery img:hover {
+      transform: scale(1.05);
+    }
+    footer {
+      background-color: #003366;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      margin-top: 40px;
+    }
+    /* Modal Popup */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      padding-top: 100px;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.6);
+    }
+    .modal-content {
+      background: white;
+      margin: auto;
+      padding: 20px;
+      width: 80%;
+      max-width: 400px;
+      border-radius: 10px;
+      text-align: center;
+      position: relative;
+      animation: popup 0.5s ease;
+    }
+    @keyframes popup {
+      from {transform: scale(0);}
+      to {transform: scale(1);}
+    }
+    .close {
+      color: red;
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .loading {
+      display: none;
+      text-align: center;
+      margin: 20px 0;
+    }
+    .spinner {
+      border: 5px solid #ccc;
+      border-top: 5px solid #28a745;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(360deg);}
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>Book Your Flight - FlyHigh Airlines</h1>
+  <nav>
+    <a href="{{ url_for('home') }}">Home</a>
+    <a href="{{ url_for('search_flights') }}">Search Flights</a>  <!-- Fixed here -->
+    <a href="{{ url_for('booking') }}">Book Now</a>
+    <a href="{{ url_for('contact') }}">Contact Us</a>
+    <a href="{{ url_for('payment') }}">Payment</a>
+</nav>
+</header>
+
+
+<section class="booking-section">
+  <h2>Enter Passenger Details</h2>
+  <form id="bookingForm">
+    <input type="text" id="name" placeholder="Full Name" required>
+    <input type="email" id="email" placeholder="Email Address" required>
+    <input type="tel" id="phone" placeholder="Phone Number (10 digits)" pattern="[0-9]{10}" required>
+    <input type="date" id="travelDate" required>
+    <input type="number" id="passengers" placeholder="Number of Passengers" min="1" value="1" required>
+    
+    <select id="class" required>
+      <option value="">Select Class</option>
+      <option value="Economy">Economy</option>
+      <option value="Business">Business</option>
+      <option value="First">First Class</option>
+    </select>
+
+    <select id="seat" required>
+      <option value="">Select Seat Preference</option>
+      <option value="Window">Window</option>
+      <option value="Aisle">Aisle</option>
+      <option value="Middle">Middle</option>
+    </select>
+
+    <div class="price-display" id="priceDisplay">Total Price: ₹0</div>
+
+    <button type="submit">Confirm Booking</button>
+  </form>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p>Processing your booking...</p>
+  </div>
+</section>
+
+<section class="gallery" id="gallery">
+    <img src="{{ url_for('static', filename='images/book1.png') }}" alt="Gallery 1">
+    <img src="{{ url_for('static', filename='images/book2.png') }}" alt="Gallery 2">
+    <img src="{{ url_for('static', filename='images/book3.png') }}" alt="Gallery 3">
+    <img src="{{ url_for('static', filename='images/book4.png') }}" alt="Gallery 4">
+</section>
+
+<footer>
+  <p>© 2025 FlyHigh Airlines. All rights reserved.</p>
+</footer>
+
+<!-- Modal -->
+<div id="confirmationModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>🎉 Booking Confirmed!</h2>
+    <p id="bookingDetails"></p>
+    <button onclick="goHome()">Go to Home</button>
+  </div>
+</div>
+
+<script>
+  const bookingForm = document.getElementById('bookingForm');
+  const modal = document.getElementById('confirmationModal');
+  const closeBtn = document.querySelector('.close');
+  const bookingDetails = document.getElementById('bookingDetails');
+  const loading = document.getElementById('loading');
+  const priceDisplay = document.getElementById('priceDisplay');
+
+  function calculatePrice() {
+    const passengers = parseInt(document.getElementById('passengers').value || 1);
+    const seatClass = document.getElementById('class').value;
+    let pricePerPassenger = 3000;
+
+    if (seatClass === 'Business') pricePerPassenger = 7000;
+    else if (seatClass === 'First') pricePerPassenger = 12000;
+
+    const totalPrice = passengers * pricePerPassenger;
+    priceDisplay.innerHTML = `Total Price: ₹${totalPrice}`;
+  }
+
+  bookingForm.addEventListener('input', calculatePrice);
+
+  bookingForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const seat = document.getElementById('seat').value;
+    const travelDate = document.getElementById('travelDate').value;
+    const passengers = document.getElementById('passengers').value;
+    const seatClass = document.getElementById('class').value;
+
+    if (name.length < 3 || !email.includes('@') || !/^\d{10}$/.test(phone) || !seat || !travelDate || !seatClass) {
+      alert('Please fill all fields correctly.');
+      return;
+    }
+
+    loading.style.display = 'block';
+
+    setTimeout(() => {
+      loading.style.display = 'none';
+      bookingDetails.innerHTML = `
+        <strong>Name:</strong> ${name}<br>
+        <strong>Email:</strong> ${email}<br>
+        <strong>Phone:</strong> ${phone}<br>
+        <strong>Travel Date:</strong> ${travelDate}<br>
+        <strong>Passengers:</strong> ${passengers}<br>
+        <strong>Class:</strong> ${seatClass}<br>
+        <strong>Seat:</strong> ${seat}<br><br>
+        <em>Have a wonderful journey with FlyHigh Airlines!</em>
+      `;
+      modal.style.display = 'block';
+    }, 1500);
+  });
+
+  closeBtn.onclick = function() {
+    modal.style.display = 'none';
+  }
+
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = 'none';
+    }
+  }
+
+  function goHome() {
+    window.location.href = '{{ url_for("home") }}';
+  }
+
+  // Gallery Click enlarge
+  const galleryImages = document.querySelectorAll('.gallery img');
+  galleryImages.forEach(img => {
+    img.addEventListener('click', () => {
+      const imageWindow = window.open("", "_blank", "width=600,height=400");
+      imageWindow.document.write(`
+        <html><head><title>View Image</title></head>
+        <body style="margin:0;display:flex;align-items:center;justify-content:center;background:#333;">
+          <img src="${img.src}" style="max-width:90%;max-height:90%;">
+        </body></html>
+      `);
+    });
+  });
+</script>
+
+</body>
+</html>
